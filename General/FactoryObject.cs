@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+
 [GlobalClass]
 public partial class FactoryObject : Node2D
 {
@@ -16,17 +18,24 @@ public partial class FactoryObject : Node2D
     protected bool _isValid;
     [Export]
     public MeshInstance2D MeshObject;
+    [Export]
+    public Vector2[] Tiles; // = position + (List[i] * gridsize)
     protected PlacingController PlacingController;
+
     public override void _Ready()
     {
         PlacingController = GetParent<PlacingController>();
     }
     protected virtual bool isValid()
     {
-        if (PlacingController.PlacedFactoryObjects.ContainsKey(Position))
+        foreach (Vector2 tile in Tiles)
         {
-            _isValid = false;
+            if (PlacingController.PlacedFactoryObjects.ContainsKey(Position + (tile * PlacingController.SnapSize)))
+            {
+                _isValid = false;
+            }
         }
+
         return _isValid;
     }
 

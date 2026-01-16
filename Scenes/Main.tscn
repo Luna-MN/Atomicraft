@@ -12,3 +12,4 @@ FactoryObjectScene = ExtResource("2_kln2b")
 
 [node name="FactoryObject" parent="Node2D" instance=ExtResource("2_idj7w")]
 position = Vector2(34.883545, 29.661163)
+Tiles = PackedVector2Array(0, 0)

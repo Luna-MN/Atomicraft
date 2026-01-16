@@ -6,8 +6,9 @@ public partial class PlacingController : Node2D
 {
     [Export]
     public FactoryObject Target;
-    [Export]
-    private Vector2 SnapSize = new Vector2(64, 64);
+
+    [Export] private Vector2 snapSize = new Vector2(64, 64);
+    public Vector2 SnapSize => snapSize;
     
     public Dictionary<Vector2, FactoryObject> PlacedFactoryObjects = new Dictionary<Vector2, FactoryObject>(); // <Position, FactoryObject>
     
@@ -41,7 +42,10 @@ public partial class PlacingController : Node2D
         {
             Color TargColor = Target.MeshObject.Modulate;
             Target.MeshObject.Modulate = new Color(TargColor.R, TargColor.G, TargColor.B);
-            PlacedFactoryObjects.Add(Target.Position, Target);
+            foreach (Vector2 tile in Target.Tiles)
+            {
+                PlacedFactoryObjects.Add(Target.Position + (tile * SnapSize), Target);
+            }
             Target = null;
         }
     }

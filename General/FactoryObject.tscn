@@ -7,6 +7,7 @@
 [node name="FactoryObject" type="Node2D" node_paths=PackedStringArray("MeshObject")]
 script = ExtResource("1_fq421")
 MeshObject = NodePath("MeshInstance2D")
+Tiles = PackedVector2Array(0, 0)
 
 [node name="MeshInstance2D" type="MeshInstance2D" parent="."]
 scale = Vector2(64, 64)

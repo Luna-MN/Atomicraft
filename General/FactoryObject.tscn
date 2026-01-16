@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://bc441qw2ehqu7"]
+
+[ext_resource type="Script" uid="uid://bj5iinx584srp" path="res://General/FactoryObject.cs" id="1_fq421"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_fq421"]
+
+[node name="FactoryObject" type="Node2D" node_paths=PackedStringArray("MeshObject")]
+script = ExtResource("1_fq421")
+MeshObject = NodePath("MeshInstance2D")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="."]
+scale = Vector2(64, 64)
+mesh = SubResource("BoxMesh_fq421")

@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://4f8trcbmq2eh"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_rvu7i"]
-
-[node name="Node2D" type="Node2D"]
-
-[node name="MeshInstance2D" type="MeshInstance2D" parent="."]
-scale = Vector2(16, 16)
-mesh = SubResource("BoxMesh_rvu7i")

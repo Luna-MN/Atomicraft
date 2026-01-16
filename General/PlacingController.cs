@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class PlacingController : Node2D
 {
@@ -8,6 +9,7 @@ public partial class PlacingController : Node2D
     [Export]
     private Vector2 SnapSize = new Vector2(64, 64);
     
+    public Dictionary<Vector2, FactoryObject> PlacedFactoryObjects = new Dictionary<Vector2, FactoryObject>(); // <Position, FactoryObject>
     
     // Debugging??
     [Export]
@@ -22,7 +24,7 @@ public partial class PlacingController : Node2D
         else
         {
             Target = FactoryObjectScene.Instantiate<FactoryObject>();
-            Target.MeshObject.Modulate = new Color(new Random().NextSingle(), new Random().NextSingle(), new Random().NextSingle(), 1);
+            Target.MeshObject.Modulate = new Color(new Random().NextSingle(), new Random().NextSingle(), new Random().NextSingle(), 0.5f);
             AddChild(Target);
         }
     }
@@ -37,6 +39,9 @@ public partial class PlacingController : Node2D
     {
         if (@event.IsActionPressed("click") && Target.IsValid)
         {
+            Color TargColor = Target.MeshObject.Modulate;
+            Target.MeshObject.Modulate = new Color(TargColor.R, TargColor.G, TargColor.B);
+            PlacedFactoryObjects.Add(Target.Position, Target);
             Target = null;
         }
     }

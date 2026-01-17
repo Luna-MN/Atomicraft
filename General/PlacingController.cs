@@ -59,9 +59,12 @@ public partial class PlacingController : Node2D
     {
         Vector2 MousePos = GetGlobalMousePosition();
         Vector2 SnappedMousePos = MousePos.Snapped(SnapSize);
-
-        float XDif = Mathf.Abs(SnappedMousePos.X) - Mathf.Abs(EndOfDragObjects.X);
-        float YDif = Mathf.Abs(SnappedMousePos.Y) - Mathf.Abs(EndOfDragObjects.Y);
+        if (EndOfDragObjects == Vector2.Zero)
+        {
+            EndOfDragObjects = Target.Position;
+        }
+        float XDif = Mathf.Abs(SnappedMousePos.X - EndOfDragObjects.X);
+        float YDif = Mathf.Abs(SnappedMousePos.Y - EndOfDragObjects.Y);
         GD.Print($"X {XDif}, Y{YDif}");
         Vertical = XDif < YDif;
         DragStarted = true;
@@ -82,6 +85,7 @@ public partial class PlacingController : Node2D
             FactoryObject ghost = CreateNewGhost(Vertical ? new Vector2(EndOfDragObjects.X, SnappedMousePos.Y) : new Vector2(SnappedMousePos.X, EndOfDragObjects.Y));
             if (!ghost.IsValid)
             {
+                Ghosts.Remove(ghost);
                 ghost.QueueFree();
             }
         }
@@ -149,9 +153,9 @@ public partial class PlacingController : Node2D
             ghost.MeshObject.Modulate = new Color(TargColor.R, TargColor.G, TargColor.B);
             if (ghost.IsValid)
             {
+                Ghosts.Remove(ghost);
                 foreach (Vector2 tile in ghost.Tiles)
                 {
-                    Ghosts.Remove(ghost);
                     PlacedFactoryObjects.Add(ghost.Position + (tile * SnapSize), ghost);
                 }
             }

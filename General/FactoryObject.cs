@@ -13,7 +13,7 @@ public partial class FactoryObject : Node2D
             _isValid = true;
             return isValid();
         }
-        private set { }
+        private set => _isValid = value;
     }
     protected bool _isValid;
     [Export]

@@ -109,10 +109,6 @@ public partial class PlacingController : Node2D
     {
         if (vertical)
         {
-            if (mousePos.Y < obj.Y + snapSize.Y / 2 && mousePos.Y > obj.Y - snapSize.Y / 2)
-            {
-                return false;
-            }
             float diffMouse = Mathf.Abs(Target.Position.Y - mousePos.Y);
             float diffObj = Mathf.Abs(Target.Position.Y - obj.Y);
             
@@ -136,10 +132,6 @@ public partial class PlacingController : Node2D
         }
         else
         {
-            if (mousePos.X < obj.X + (snapSize.X / 2) && mousePos.X > obj.X - (snapSize.X / 2))
-            {
-                return false;
-            }
 
             float diffMouse = Mathf.Abs(Target.Position.X - mousePos.X);
             float diffObj = Mathf.Abs(Target.Position.X - obj.X);
@@ -148,7 +140,7 @@ public partial class PlacingController : Node2D
                 return false; 
             }
 
-        float maxTileX = float.NegativeInfinity;
+            float maxTileX = float.NegativeInfinity;
             float minTileX = float.PositiveInfinity;
             foreach (var t in Target.Tiles)
             {

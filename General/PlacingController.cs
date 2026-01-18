@@ -78,7 +78,7 @@ public partial class PlacingController : Node2D
             EndOfDragObjects = Target.Position;
         }
         
-        bool CreateNewObject = Compare(EndOfDragObjects, SnappedMousePos, Vertical);
+        bool CreateNewObject = CompareCreate(EndOfDragObjects, SnappedMousePos, Vertical);
 
         if (CreateNewObject)
         {
@@ -89,9 +89,14 @@ public partial class PlacingController : Node2D
                 ghost.QueueFree();
             }
         }
-
+        
+        // compare target pos to end of drag objects, if mouse pos is not in end of drag object and its not creating then destroy
+        else if(CompareDestroy(EndOfDragObjects, SnappedMousePos, Vertical))
+        {
+            // destroy the last in row
+        }
     }
-    private bool Compare(Vector2 obj, Vector2 mousePos, bool vertical) // vertical == true => compare Y
+    private bool CompareCreate(Vector2 obj, Vector2 mousePos, bool vertical) // vertical == true => compare Y
     {
         if (vertical)
         {
@@ -107,7 +112,6 @@ public partial class PlacingController : Node2D
             float worldMinY = obj.Y + minTileY * SnapSize.Y;
             if (mousePos.Y < worldMinY) return true;
             if (mousePos.Y > worldMaxY) return true;
-            return false;
         }
         else
         {
@@ -123,10 +127,41 @@ public partial class PlacingController : Node2D
             float worldMinX = obj.X + minTileX * SnapSize.X;
             if (mousePos.X < worldMinX) return true;
             if (mousePos.X > worldMaxX) return true;
-            return false;
         }
+        return false;
     }
 
+    public bool CompareDestroy(Vector2 obj, Vector2 mousePos, bool vertical)
+    {
+
+        if (vertical)
+        {
+            float diff = Mathf.Abs(mousePos.Y - obj.Y);
+            if (diff > SnapSize.Y / 2)
+            {
+                float distMouse = Mathf.Abs(mousePos.Y - Target.Position.Y);
+                float distObj = Mathf.Abs(Target.Position.Y - obj.Y);
+                if (distMouse < distObj)
+                {
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            float diff = Mathf.Abs(mousePos.X - obj.X);
+            if (diff > SnapSize.X / 2)
+            {
+                float distMouse = Mathf.Abs(mousePos.X - Target.Position.X);
+                float distObj = Mathf.Abs(Target.Position.X - obj.X);
+                if (distMouse < distObj)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public override void _Input(InputEvent @event)
     {

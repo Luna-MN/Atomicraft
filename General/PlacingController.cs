@@ -82,11 +82,16 @@ public partial class PlacingController : Node2D
 
         if (CreateNewObject)
         {
+            GD.Print("Creating new object");
             FactoryObject ghost = CreateNewGhost(Vertical ? new Vector2(EndOfDragObjects.X, SnappedMousePos.Y) : new Vector2(SnappedMousePos.X, EndOfDragObjects.Y));
             if (!ghost.IsValid)
             {
                 Ghosts.Remove(ghost);
                 ghost.QueueFree();
+            }
+            else
+            {
+                EndOfDragObjects = ghost.Position;
             }
         }
         
@@ -94,12 +99,28 @@ public partial class PlacingController : Node2D
         else if(CompareDestroy(EndOfDragObjects, SnappedMousePos, Vertical))
         {
             // destroy the last in row
+            Ghosts[Ghosts.Count - 1].QueueFree();
+            Ghosts.RemoveAt(Ghosts.Count - 1);
+            EndOfDragObjects = Ghosts.Last().Position;
+            // [ 0, 1, 2, 3]
         }
     }
     private bool CompareCreate(Vector2 obj, Vector2 mousePos, bool vertical) // vertical == true => compare Y
     {
         if (vertical)
         {
+            if (mousePos.Y < obj.Y + snapSize.Y / 2 && mousePos.Y > obj.Y - snapSize.Y / 2)
+            {
+                return false;
+            }
+            float diffMouse = Mathf.Abs(Target.Position.Y - mousePos.Y);
+            float diffObj = Mathf.Abs(Target.Position.Y - obj.Y);
+            
+            if (diffMouse < diffObj)
+            {
+                return false;                    
+            }
+            
             float maxTileY = float.NegativeInfinity;
             float minTileY = float.PositiveInfinity;
             foreach (var t in Target.Tiles)
@@ -115,7 +136,19 @@ public partial class PlacingController : Node2D
         }
         else
         {
-            float maxTileX = float.NegativeInfinity;
+            if (mousePos.X < obj.X + (snapSize.X / 2) && mousePos.X > obj.X - (snapSize.X / 2))
+            {
+                return false;
+            }
+
+            float diffMouse = Mathf.Abs(Target.Position.X - mousePos.X);
+            float diffObj = Mathf.Abs(Target.Position.X - obj.X);
+            if (diffMouse < diffObj)
+            {
+                return false; 
+            }
+
+        float maxTileX = float.NegativeInfinity;
             float minTileX = float.PositiveInfinity;
             foreach (var t in Target.Tiles)
             {

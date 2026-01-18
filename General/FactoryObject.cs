@@ -15,17 +15,17 @@ public partial class FactoryObject : Node2D
         }
         private set => _isValid = value;
     }
+
     protected bool _isValid;
-    [Export]
-    public MeshInstance2D MeshObject;
-    [Export]
-    public Vector2[] Tiles; // = position + (List[i] * gridsize)
+    [Export] public MeshInstance2D MeshObject;
+    [Export] public Vector2[] Tiles; // = position + (List[i] * gridsize)
     protected PlacingController PlacingController;
 
     public override void _Ready()
     {
         PlacingController = GetParent<PlacingController>();
     }
+
     protected virtual bool isValid()
     {
         foreach (Vector2 tile in Tiles)
@@ -37,6 +37,18 @@ public partial class FactoryObject : Node2D
         }
 
         return _isValid;
+    }
+    public virtual bool CheckValid(Vector2 pos)
+    {
+        bool valid = true;
+        foreach (Vector2 tile in Tiles)
+        {
+            if (PlacingController.PlacedFactoryObjects.ContainsKey(pos + (tile * PlacingController.SnapSize)))
+            {
+                valid = false;
+            }
+        }
+        return valid;
     }
 
 }

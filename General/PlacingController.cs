@@ -83,7 +83,7 @@ public partial class PlacingController : Node2D
         if (CreateNewObject)
         {
             GD.Print("Creating new object");
-            FactoryObject ghost = CreateNewGhost(Vertical ? new Vector2(EndOfDragObjects.X, SnappedMousePos.Y) : new Vector2(SnappedMousePos.X, EndOfDragObjects.Y));
+            FactoryObject ghost = CreateNewGhost(Vertical ? new Vector2(EndOfDragObjects.X, SnappedMousePos.Y) : new Vector2(SnappedMousePos.X, EndOfDragObjects.Y), true);
             if (!ghost.IsValid)
             {
                 Ghosts.Remove(ghost);
@@ -229,7 +229,7 @@ public partial class PlacingController : Node2D
         Target = null;
     }
 
-    public FactoryObject CreateNewGhost(Vector2 position)
+    public FactoryObject CreateNewGhost(Vector2 position, bool fill = false)
     {
         FactoryObject newGhost = FactoryObjectScene.Instantiate<FactoryObject>();
         if (Target != null)
@@ -239,6 +239,20 @@ public partial class PlacingController : Node2D
         newGhost.Position = position;
         AddChild(newGhost);
         Ghosts.Add(newGhost);
+        if (fill)
+        {
+            Vector2 dir = (Target.Position - position).Normalized();
+            Vector2 FillLoc = position + dir * SnapSize;
+            List<Vector2> ghostLocations = Ghosts.Select(x => x.Position).ToList();
+            
+            if (!ghostLocations.Contains(FillLoc))
+            {
+                if (newGhost.CheckValid(FillLoc))
+                {
+                    CreateNewGhost(FillLoc, true);
+                }
+            }
+        }
         return newGhost;
     }
 }
